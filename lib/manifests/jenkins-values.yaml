@@ -1,8 +1,8 @@
-master:
+controller:
   additionalPlugins:
     - s3:0.11.5
-    - ssh-slaves:1.31.2
     - ws-cleanup:0.38
+    - ansicolor:0.7.5
   resources:
     requests:
       cpu: "1024m"
@@ -28,32 +28,10 @@ master:
                 numExecutors: 1
                 remoteFS: /Users/ec2-user
                 launcher:
-                  SSHLauncher:
-                    host: "54.191.228.108"
-                    port: 22
-                    credentialsId: jenkins-ssh-key
-                    launchTimeoutSeconds: 60
-                    maxNumRetries: 3
-                    retryWaitTime: 30
-                    sshHostKeyVerificationStrategy:
-                      manuallyTrustedKeyVerificationStrategy:
-                        requireInitialManualTrust: false
-      security-config: |
-          credentials:
-            system:
-              domainCredentials:
-              - credentials:
-                - basicSSHUserPrivateKey:
-                    id: jenkins-ssh-key
-                    username: ec2-user
-                    scope: GLOBAL
-                    description: jenkins-ssh-key
-                    privateKeySource:
-                      directEntry:
-                        privateKey: |-
-                          -----BEGIN RSA PRIVATE KEY-----
-                          #Your Key Goes here. Include the "BEGIN" and "END" lines as well.#
-                          -----END RSA PRIVATE KEY-----
+                  jnlp:
+                    workDirSettings:
+                     disabled: true
+                     failIfWorkDirIsMissing: false
       
 agent:
   Enabled: false

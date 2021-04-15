@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as iam from '@aws-cdk/aws-iam';
-import { Role } from '@aws-cdk/aws-iam';
+import {Effect, ManagedPolicy, Role} from '@aws-cdk/aws-iam';
 
 export class S3Stack extends cdk.Stack {
     public readonly myBucket: s3.Bucket;
@@ -23,6 +23,22 @@ export class S3Stack extends cdk.Stack {
         role.addToPolicy(new iam.PolicyStatement({
             resources: [bucket.bucketArn],
             actions: ['s3:*'],
+        }));
+        role.addManagedPolicy(
+            ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess')
+        );
+        role.addManagedPolicy(
+            ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore')
+        );
+
+        role.addToPolicy(new iam.PolicyStatement({
+            effect: Effect.ALLOW,
+            resources: ['*'],
+            actions: ['secretsmanager:GetResourcePolicy',
+                      'secretsmanager:GetSecretValue',
+                      'secretsmanager:DescribeSecret',
+                      'secretsmanager:ListSecretVersionIds'
+            ],
         }));
 
         this.myRole = role;

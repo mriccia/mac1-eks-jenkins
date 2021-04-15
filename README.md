@@ -14,17 +14,17 @@ To deploy this environment, you will need to install [aws-cdk](https://docs.aws.
 
 ## Allocate Mac1 EC2 Hosts
 
-After ensuring the AWS CLI is installed and configured, you will need to first allocate an ec2 Mac1 host in your region of choice. In the example below we are using us-west-2.
+After ensuring the AWS CLI is installed and configured, you will need to first allocate an ec2 Mac1 host in your region of choice. In the example below we are using us-east-2.
 
 ```
 bash$ aws ec2 allocate-hosts --instance-type mac1.metal \
-  --availability-zone us-west-2a --auto-placement on \
-  --quantity 1 --region us-west-2
+  --availability-zone us-east-2a --auto-placement on \
+  --quantity 1 --region us-east-2
 ```
 
 ## Configure SSH Key for Workers
 
-You will need to [create an SSH key](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) in the AWS console. Give it a name like “jenkins-key”
+You will need to [create an SSH key](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) in the AWS console. Give it a name like “mac-key”
 
 Clone this repo to a directory of your choosing and change into that directory.
 
@@ -52,7 +52,7 @@ Now that you have configured the AWS CLI, AWS CDK, and generated your SSH key yo
 First, we’re going to choose the Region we want to launch this environment into by setting an environmental variable for CDK.
 
 ```
-bash$ export CDK_DEFAULT_REGION=us-west-2
+bash$ export CDK_DEFAULT_REGION=us-east-2
 ```
 
 Install the CDK dependencies.

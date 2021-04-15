@@ -15,7 +15,7 @@ export class JenkinsHelm extends cdk.Stack {
 
             new eks.HelmChart(this, 'JenkinsHelm', {
             cluster,
-            repository: "https://charts.helm.sh/stable", 
+            repository: "https://charts.jenkins.io",
             chart: "jenkins", 
             release: "cicd", 
             namespace: "jenkins", 
