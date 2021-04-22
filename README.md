@@ -28,22 +28,14 @@ You will need to [create an SSH key](https://docs.aws.amazon.com/AWSEC2/latest/U
 
 Clone this repo to a directory of your choosing and change into that directory.
 
-```
-bash$ git clone git@github.com:aws-samples/mac1-eks-jenkins.git
-bash$ cd mac1-eks-jenkins
-```
+## Create an AMI with XCode and all tooling installed 
 
-Once you have the key created you will need to edit the Jenkins Configuration as Code ./lib/manifests/jenkins-values.yaml file and add your private key there. The private key is uploaded to the Jenkins leader so it can SSH into the MacOS worker.
+(Step by step instructions TBD)
 
-Under the security-config parameter, add your private key here that was generated.
-
-```
-bash$ vi ./lib/manifests/jenkins-values.yaml
-# Add your key under the "privateKey: |-" line. Include the BEGIN and END lines
-# found in your key file.
-```
-
-![EKS Output Image](lib/images/ssh-key.jpg)
+Once you have an allocated host, go ahead and spin up a new Instance.  
+Connect to the new instance using SSM (steps TBD) and run the script in the file `init/init.sh`  
+Once you have successfully ran through all the steps, create a new AMI from the running instance.  
+Take note of the newly created AMI  
 
 ## Instantiating EKS, Jenkins, MacOS, and an S3 Bucket
 
@@ -91,25 +83,7 @@ From the outputs, you want to run the aws eks update-kubeconfig and aws eks get-
 bash$ cdk deploy JenkinsBucket
 ```
 
-### Creating the MacOS Jenkins Worker
-
-Launch the Jenkins CDK stack and note the IP address of the worker.
-
-```
-bash$ cdk deploy JenkinsWorker
-```
-
-![Jenkins Worker Output Image](lib/images/worker-outputs.jpg)
-
-### Creating the Jenkins Leader
-
-Once again, we’re going to need to update the Jenkins Configuration as Code YAML file to ensure our worker is successfully added. Please enter the IP address that was outputted from the JenkinsWorker stack in the “host:” parameter highlighted below.
-
-```
-bash$ vi ./lib/manifests/jenkins-values.yaml
-```
-
-![Jenkins Leader IP](lib/images/jenkins-ip.jpg)
+### Creating the Jenkins Controller
 
 It takes about 4-5 minutes for this stack to complete.
 
@@ -130,8 +104,40 @@ bash$ printf $(kubectl get secret --namespace jenkins cicd-jenkins -o jsonpath="
 Get the URL to your Jenkins installation.
 
 ```
-bash$ kubectl get svc --namespace jenkins cicd-jenkins --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}"
+bash$ export JENKINS_ALB=$(kubectl get svc --namespace jenkins cicd-jenkins --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
+bash$ echo $JENKINS_ALB
 ```
+
+### Setup Jenkins
+
+#### Setup Jenkins URL
+
+Manage Jenkins -> Configure system -> Jenkins URL - set to the JENKINS_ALB value
+
+Configure Clouds -> Kubernetes -> Set URL
+Jenkins tunnel - remove ci-cd
+
+#### Get the Jenkins Secrets Credentials
+
+Login into Jenkins  
+Open macos-worker  
+Select "use websockets"  
+Copy Secret String  
+
+```
+bash$ export JENKINS_SECRET="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+```
+
+### Creating the MacOS Jenkins Worker
+
+Launch the Jenkins CDK stack and note the IP address of the worker.
+Modify the `lib/ec2-stacks.ts` with the newly created Golden AMI in the correct region
+
+```
+bash$ cdk deploy JenkinsWorker
+```
+
+![Jenkins Worker Output Image](lib/images/worker-outputs.jpg)
 
 ### Logging into Jenkins
 
