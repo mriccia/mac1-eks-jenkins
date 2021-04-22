@@ -3,6 +3,7 @@ controller:
     - s3:0.11.5
     - ws-cleanup:0.38
     - ansicolor:0.7.5
+    - github:1.33.1
   resources:
     requests:
       cpu: "1024m"
