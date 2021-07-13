@@ -1,8 +1,10 @@
-# Integrating EC2 MacOS Workers with EKS and Jenkins
+# Integrating AWS EC2 Mac Instances with EKS and Jenkins for test workers
 
 ## What is this?
 
-This project will build and deploy a new VPC with an EKS cluster, deploy a fault tolerant instance of Jenkins, provision a MacOS EC2 instance, add the instance as a worker to Jenkins, and create an S3 bucket that uses a least privileges security model with access from only the Jenkins’s worker. This project is leveraging the Jenkins Configuration as Code [plugin](https://jenkins.io/projects/jcasc/) to automate the Jenkins platform.
+Mac OS Desktop and iOS apps have not had same level of tooling for CI/CD that you find in typical server side project. With AWS Mac Instances familiar tools can be integrated to build automated test pipeline. This project will build and deploy a new VPC with an EKS cluster, deploy a fault tolerant instance of Jenkins, provision a MacOS EC2 instance, add the instance as a worker to Jenkins, and create an S3 bucket that uses a least privileges security model with access from only the Jenkins’s worker. This project is leveraging the Jenkins Configuration as Code [plugin](https://jenkins.io/projects/jcasc/) to automate the Jenkins platform.
+
+[Quickview of AWS EC2 Mac Instance Pricing](https://aws.amazon.com/ec2/instance-types/mac/)
 
 ## Why?
 
